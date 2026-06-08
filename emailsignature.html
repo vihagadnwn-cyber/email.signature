@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Email Signature Creator | Prime Group</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+    <style>
+        :root {
+            --bg: #f4f3ef;
+            --surface: #ffffff;
+            --surface-2: #f9f8f5;
+            --border: #e8e4da;
+            --border-light: #f0ede5;
+            --text-primary: #1a1814;
+            --text-secondary: #6b6457;
+            --text-muted: #9d968a;
+
+            /* Bhoomi brand */
+            --bhoomi-gold: #c8970a;
+            --bhoomi-gold-light: #f5e6b0;
+            --bhoomi-dark: #3d2a00;
+            --bhoomi-stripe: #d4af37;
+
+            /* Prime brand */
+            --prime-green: #0d4a27;
+            --prime-green-mid: #1b6b38;
+            --prime-green-light: #e8f4ed;
+            --prime-red: #b81c2e;
+            --prime-stripe: #1b5e20;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg);
+            font-family: 'DM Sans', sans-serif;
+            padding: 2.5rem 2rem;
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+
+        /* ── App Shell ─────────────────────────────────── */
+        .app-wrapper {
+            max-width: 1340px;
+            margin: 0 auto;
+            background: var(--surface);
+            border-radius: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,.04), 0 20px 60px rgba(0,0,0,.10);
+            overflow: hidden;
+        }
+
+        /* ── Header ─────────────────────────────────────── */
+        .app-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.4rem 2.4rem;
+            background: #ffffff;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+        .app-header::before { display: none; }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            position: relative;
+        }
+
+        .app-header h1 {
+            font-family: 'DM Serif Display', serif;
+            font-size: 1.45rem;
+            font-weight: 400;
+            color: var(--text-primary);
+            letter-spacing: 0;
+            line-height: 1.2;
+        }
+        .app-header h1 span {
+            display: block;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 2px;
+        }
+        .header-logo {
+            background: transparent;
+            border-radius: 0;
+            padding: 0;
+        }
+        .header-logo img {
+            height: 48px;
+            width: auto;
+            display: block;
+            filter: none;
+            opacity: 1;
+        }
+
+        /* ── Tab Bar ─────────────────────────────────────── */
+        .tab-bar {
+            display: flex;
+            background: #faf9f6;
+            padding: 0 2rem;
+            gap: 4px;
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+        }
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 1rem 1.6rem;
+            font-size: 0.82rem;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            cursor: pointer;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+            white-space: nowrap;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -1px;
+            letter-spacing: 0.2px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .tab-btn .tab-dot {
+            width: 7px; height: 7px;
+            border-radius: 50%;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+        .tab-btn:hover { color: var(--text-primary); }
+
+        .tab-btn.bhoomi-tab.active { color: var(--bhoomi-dark); border-bottom-color: var(--bhoomi-stripe); }
+        .tab-btn.bhoomi-tab .tab-dot { background: var(--bhoomi-stripe); }
+        .tab-btn.bhoomi-tab:not(.active) .tab-dot { background: var(--border); }
+
+        .tab-btn.prime-tab.active,
+        .tab-btn.residencies-tab.active,
+        .tab-btn.construction-tab.active { color: var(--prime-green); border-bottom-color: var(--prime-stripe); }
+        .tab-btn.prime-tab .tab-dot,
+        .tab-btn.residencies-tab .tab-dot,
+        .tab-btn.construction-tab .tab-dot { background: var(--prime-stripe); }
+        .tab-btn.prime-tab:not(.active) .tab-dot,
+        .tab-btn.residencies-tab:not(.active) .tab-dot,
+        .tab-btn.construction-tab:not(.active) .tab-dot { background: var(--border); }
+
+        /* ── Panel ───────────────────────────────────────── */
+        .tab-panel {
+            display: none;
+            padding: 2rem 2.4rem 2.4rem;
+            background: var(--bg);
+            animation: panelIn 0.22s ease-out;
+        }
+        .tab-panel.active-panel { display: block; }
+        @keyframes panelIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── Split Layout ────────────────────────────────── */
+        .split-grid {
+            display: grid;
+            grid-template-columns: 310px 1fr;
+            gap: 1.6rem;
+            align-items: start;
+        }
+
+        /* ── Edit Card ──────────────────────────────────── */
+        .edit-card {
+            background: var(--surface);
+            border-radius: 1.4rem;
+            padding: 1.8rem;
+            border: 1px solid var(--border);
+        }
+        .section-title {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            margin-bottom: 1.4rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding-bottom: 0.9rem;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .section-title .title-pip {
+            width: 18px; height: 3px; border-radius: 99px;
+        }
+        .bhoomi-title { color: var(--bhoomi-dark); }
+        .bhoomi-title .title-pip { background: var(--bhoomi-stripe); }
+        .prime-title,
+        .residencies-title,
+        .construction-title { color: var(--prime-green); }
+        .prime-title .title-pip,
+        .residencies-title .title-pip,
+        .construction-title .title-pip { background: var(--prime-stripe); }
+
+        .form-group { margin-bottom: 1rem; }
+        label {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            margin-bottom: 0.4rem;
+            color: var(--text-muted);
+        }
+        input {
+            width: 100%;
+            padding: 0.7rem 0.9rem;
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            font-size: 0.85rem;
+            background: var(--surface-2);
+            transition: all 0.18s;
+            font-family: 'DM Sans', sans-serif;
+            outline: none;
+            color: var(--text-primary);
+        }
+        input::placeholder { color: var(--text-muted); }
+        input:focus {
+            border-color: #b0a896;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(180,160,120,0.12);
+        }
+
+        .company-fixed {
+            background: var(--surface-2);
+            border-radius: 0.9rem;
+            padding: 0.9rem 1.1rem;
+            margin-top: 1rem;
+            border: 1px solid var(--border-light);
+            font-size: 0.72rem;
+            color: var(--text-secondary);
+            line-height: 1.75;
+        }
+        .company-fixed strong {
+            color: var(--text-primary);
+            font-weight: 700;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .btn-group {
+            margin-top: 1.4rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+        .btn {
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.18s ease;
+            font-size: 0.75rem;
+            font-family: 'DM Sans', sans-serif;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.2px;
+        }
+        .btn-primary {
+            background: var(--prime-green);
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #0a3a1e;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 14px rgba(13,74,39,0.3);
+        }
+        .btn-primary.bhoomi-btn {
+            background: var(--bhoomi-dark);
+        }
+        .btn-primary.bhoomi-btn:hover {
+            background: #2a1c00;
+            box-shadow: 0 4px 14px rgba(61,42,0,0.3);
+        }
+        .btn-secondary {
+            background: var(--surface-2);
+            color: var(--text-secondary);
+            border: 1px solid var(--border);
+        }
+        .btn-secondary:hover {
+            background: var(--border-light);
+            transform: translateY(-1px);
+        }
+
+        /* ── Preview Card ────────────────────────────────── */
+        .preview-card {
+            background: var(--surface);
+            border-radius: 1.4rem;
+            padding: 1.8rem;
+            border: 1px solid var(--border);
+        }
+        .preview-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .preview-label::before {
+            content: '';
+            display: inline-block;
+            width: 8px; height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+            box-shadow: 0 0 0 3px rgba(74,222,128,0.2);
+            animation: pulse 2s ease infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 3px rgba(74,222,128,0.2); }
+            50%       { box-shadow: 0 0 0 6px rgba(74,222,128,0.06); }
+        }
+        .preview-bg {
+            background: #f7f6f2;
+            border-radius: 0.9rem;
+            padding: 1.5rem;
+            border: 1px solid var(--border-light);
+            overflow-x: auto;
+        }
+
+        /* ── SIGNATURE CARD (landscape, kept as-is per requirement) ─ */
+        .sig-card {
+            width: 100%;
+            max-width: 720px;
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            border-collapse: collapse;
+            border-spacing: 0;
+            background: #ffffff;
+            border: 1px solid #e8e0d0;
+            box-shadow: 0 2px 12px rgba(0,0,0,.06), 0 8px 32px rgba(0,0,0,.04);
+        }
+
+        /* Name block */
+        .sig-left {
+            width: 210px;
+            padding: 20px 14px 20px 24px;
+            vertical-align: middle;
+        }
+        .sig-name {
+            font-size: 22px;
+            font-weight: 800;
+            color: #0d3826;
+            line-height: 1.15;
+            letter-spacing: -0.3px;
+            text-transform: uppercase;
+        }
+        .sig-title {
+            font-size: 10px;
+            font-weight: 700;
+            color: #7a9484;
+            text-transform: uppercase;
+            letter-spacing: 1.4px;
+            margin-top: 7px;
+        }
+        .sig-company {
+            font-size: 8.5px;
+            font-weight: 500;
+            color: #b0bdb6;
+            text-transform: uppercase;
+            letter-spacing: 0.9px;
+            margin-top: 5px;
+        }
+
+        /* Divider */
+        .sig-divider-cell {
+            width: 8px;
+            padding: 0;
+            vertical-align: middle;
+        }
+        .sig-divider {
+            width: 2px;
+            height: 90px;
+            display: block;
+            margin: 0 auto;
+            background: linear-gradient(to bottom, transparent, #1a2e24 20%, #1a2e24 80%, transparent);
+        }
+        .sig-divider.prime-divider {
+            background: linear-gradient(to bottom, transparent, #c8102e 20%, #c8102e 80%, transparent);
+        }
+
+        /* Contact details */
+        .sig-details {
+            padding: 0 24px 0 20px;
+            min-width: 230px;
+            vertical-align: middle;
+        }
+        .sig-row {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 6px;
+            flex-wrap: nowrap;
+        }
+        .sig-label {
+            font-size: 8.5px;
+            font-weight: 700;
+            color: #0d3826;
+            width: 52px;
+            flex-shrink: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            padding-top: 1px;
+        }
+        .sig-value {
+            font-size: 11px;
+            color: #2d4f3e;
+            word-break: break-word;
+            flex: 1;
+            line-height: 1.4;
+        }
+        .sig-value a {
+            color: #2d4f3e;
+            text-decoration: none;
+        }
+
+        /* Logo area */
+        .sig-right {
+            padding: 20px 22px 20px 8px;
+            text-align: center;
+            min-width: 120px;
+            vertical-align: middle;
+        }
+        .sig-logo-wrap,
+        .sig-logo-prime {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+        .sig-logo {
+            max-width: 100px; max-height: 60px;
+            height: auto; display: block;
+            border: none; object-fit: contain;
+        }
+        .sig-logo-small {
+            max-width: 80px; max-height: 50px;
+            height: auto; display: block;
+            border: none; object-fit: contain;
+        }
+
+        /* Bottom stripe */
+        .sig-bottom-stripe {
+            height: 5px;
+            background: var(--bhoomi-stripe);
+        }
+        .sig-bottom-stripe.prime-stripe {
+            background: var(--prime-stripe);
+        }
+
+        /* ── Toast ───────────────────────────────────────── */
+        .toast-msg {
+            position: fixed;
+            bottom: 30px; left: 50%;
+            transform: translateX(-50%) translateY(6px);
+            background: #1a1814;
+            color: #fff;
+            padding: 0.65rem 2rem;
+            border-radius: 60px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            font-family: 'DM Sans', sans-serif;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.22s ease, transform 0.22s ease;
+            pointer-events: none;
+            box-shadow: 0 8px 28px rgba(0,0,0,0.22);
+            letter-spacing: 0.2px;
+        }
+        .toast-msg.show {
+            opacity: 1;
+            transform: translateX(-50%) translateY(0);
+        }
+
+        /* ── Responsive ─────────────────────────────────── */
+        @media (max-width: 900px) {
+            body { padding: 1.2rem 1rem; }
+            .split-grid { grid-template-columns: 1fr; }
+            .tab-bar { padding: 0 1rem; }
+            .tab-panel { padding: 1.2rem 1rem 1.6rem; }
+            .app-header { padding: 1.1rem 1.4rem; }
+            .sig-card { display: block; }
+            .sig-card td { display: block; width: 100%; padding: 8px 16px; }
+            .sig-divider-cell { display: none; }
+        }
+        @media (max-width: 480px) {
+            .tab-btn { padding: 0.8rem 1rem; font-size: 0.75rem; }
+            .app-header h1 { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-wrapper">
+
+        <!-- HEADER -->
+        <div class="app-header">
+            <div class="header-left">
+                <div class="header-logo">
+                    <img src="https://wsrv.nl/?url=raw.githubusercontent.com/vihagadnwn-cyber/mailsignature/main/prime-group-logo.png" alt="Prime Group" onerror="this.style.display='none'">
+                </div>
+                <h1>
+                    <span>Prime Group of Companies</span>
+                    Email Signature Creator
+                </h1>
+            </div>
+        </div>
+
+        <!-- TAB BAR -->
+        <div class="tab-bar">
+            <button class="tab-btn bhoomi-tab active" data-tab="bhoomi">
+                <span class="tab-dot"></span> Bhoomi Realty
+            </button>
+            <button class="tab-btn prime-tab" data-tab="prime">
+                <span class="tab-dot"></span> Prime Lands
+            </button>
+            <button class="tab-btn residencies-tab" data-tab="residencies">
+                <span class="tab-dot"></span> Prime Lands Residencies
+            </button>
+            <button class="tab-btn construction-tab" data-tab="construction">
+                <span class="tab-dot"></span> Prime Construction
+            </button>
+        </div>
+
+        <!-- BHOOMI PANEL -->
+        <div id="tab-bhoomi" class="tab-panel active-panel">
+            <div class="split-grid">
+                <div class="edit-card">
+                    <div class="section-title bhoomi-title">
+                        <span class="title-pip"></span> Your Details
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="bhoomiName" placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Designation</label>
+                        <input type="text" id="bhoomiTitle" placeholder="Your Designation">
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="text" id="bhoomiMobile" placeholder="+94 XX XXX XXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="bhoomiEmail" placeholder="you@bhoomirealty.lk">
+                    </div>
+                    <div class="company-fixed">
+                        <strong>Company Fixed Information</strong>
+                        Office: +94 11 2 093 906<br>
+                        Address: 885, Kotte Road, Ethul Kotte, Sri Lanka<br>
+                        Website: www.bhoomirealty.lk
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary bhoomi-btn" id="refreshBhoomiBtn">↻ Update Preview</button>
+                        <button class="btn btn-secondary" id="downloadBhoomiImgBtn">↓ Download PNG</button>
+                    </div>
+                </div>
+                <div class="preview-card">
+                    <div class="preview-label">Live Preview — Outlook Ready</div>
+                    <div class="preview-bg">
+                        <div id="bhoomiPreview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRIME LANDS PANEL -->
+        <div id="tab-prime" class="tab-panel">
+            <div class="split-grid">
+                <div class="edit-card">
+                    <div class="section-title prime-title">
+                        <span class="title-pip"></span> Your Details
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="primeName" placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Designation</label>
+                        <input type="text" id="primeTitle" placeholder="Your Designation">
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="text" id="primeMobile" placeholder="+94 XX XXX XXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="primeEmail" placeholder="you@primelands.lk">
+                    </div>
+                    <div class="form-group">
+                        <label>Extension Number</label>
+                        <input type="text" id="primeExt" placeholder="e.g. 400">
+                    </div>
+                    <div class="company-fixed">
+                        <strong>Company Fixed Information</strong>
+                        Office: +94 112 699 822 (Ext: your choice)<br>
+                        Address: No 75, D.S. Senanayake Mawatha, Colombo 8, Sri Lanka<br>
+                        Website: www.primelands.lk
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="refreshPrimeBtn">↻ Update Preview</button>
+                        <button class="btn btn-secondary" id="downloadPrimeImgBtn">↓ Download PNG</button>
+                    </div>
+                </div>
+                <div class="preview-card">
+                    <div class="preview-label">Live Preview — Outlook Ready</div>
+                    <div class="preview-bg">
+                        <div id="primePreview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRIME LANDS RESIDENCIES PANEL -->
+        <div id="tab-residencies" class="tab-panel">
+            <div class="split-grid">
+                <div class="edit-card">
+                    <div class="section-title residencies-title">
+                        <span class="title-pip"></span> Your Details
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="residenciesName" placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Designation</label>
+                        <input type="text" id="residenciesTitle" placeholder="Your Designation">
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="text" id="residenciesMobile" placeholder="+94 XX XXX XXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="residenciesEmail" placeholder="you@primeresidencies.lk">
+                    </div>
+                    <div class="form-group">
+                        <label>Extension Number</label>
+                        <input type="text" id="residenciesExt" placeholder="e.g. 400">
+                    </div>
+                    <div class="company-fixed">
+                        <strong>Company Fixed Information</strong>
+                        Office: +94 112 699 822 (Ext: your choice)<br>
+                        Address: No 75, D.S. Senanayake Mawatha, Colombo 8, Sri Lanka<br>
+                        Website: www.primeresidencies.lk
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="refreshResidenciesBtn">↻ Update Preview</button>
+                        <button class="btn btn-secondary" id="downloadResidenciesImgBtn">↓ Download PNG</button>
+                    </div>
+                </div>
+                <div class="preview-card">
+                    <div class="preview-label">Live Preview — Outlook Ready</div>
+                    <div class="preview-bg">
+                        <div id="residenciesPreview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- PRIME CONSTRUCTION PANEL -->
+        <div id="tab-construction" class="tab-panel">
+            <div class="split-grid">
+                <div class="edit-card">
+                    <div class="section-title construction-title">
+                        <span class="title-pip"></span> Your Details
+                    </div>
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="constructionName" placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <label>Designation</label>
+                        <input type="text" id="constructionTitle" placeholder="Your Designation">
+                    </div>
+                    <div class="form-group">
+                        <label>Mobile Number</label>
+                        <input type="text" id="constructionMobile" placeholder="+94 XX XXX XXXX">
+                    </div>
+                    <div class="form-group">
+                        <label>Email Address</label>
+                        <input type="email" id="constructionEmail" placeholder="you@primecst.lk">
+                    </div>
+                    <div class="form-group">
+                        <label>Extension Number</label>
+                        <input type="text" id="constructionExt" placeholder="e.g. 400">
+                    </div>
+                    <div class="company-fixed">
+                        <strong>Company Fixed Information</strong>
+                        Office: +94 11 203 0840<br>
+                        Address: No 75, D.S. Senanayake Mawatha, Colombo 8, Sri Lanka<br>
+                        Website: www.primelands.lk
+                    </div>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" id="refreshConstructionBtn">↻ Update Preview</button>
+                        <button class="btn btn-secondary" id="downloadConstructionImgBtn">↓ Download PNG</button>
+                    </div>
+                </div>
+                <div class="preview-card">
+                    <div class="preview-label">Live Preview — Outlook Ready</div>
+                    <div class="preview-bg">
+                        <div id="constructionPreview"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /.app-wrapper -->
+    <div id="toastMsg" class="toast-msg"></div>
+
+    <script>
+        /* ── Company data ────────────────────────────────── */
+        // Images routed through wsrv.nl CORS proxy so they load cross-origin
+        // and render correctly in html2canvas (PNG download).
+        const GH = "https://wsrv.nl/?url=raw.githubusercontent.com/vihagadnwn-cyber/mailsignature/main/";
+
+        const BHOOMI = {
+            logo: GH + "bhoomi-logo.png",
+            office: "+94 11 2 093 906",
+            web: "www.bhoomirealty.lk",
+            companyName: "BHOOMI REALTY HOLDINGS (PVT) LTD",
+            address: "885, Kotte Road, Ethul Kotte, Sri Lanka"
+        };
+        const PRIME = {
+            logo1: GH + "primelogo%20(1).png",
+            logo2: GH + "REAA%202026%20badges%20PNG%20%20-_Prime%20Group-64.png",
+            office: "+94 112 699 822",
+            web: "www.primelands.lk",
+            companyName: "PRIME LANDS (PVT) LTD",
+            address: "No 75, D.S. Senanayake Mawatha, Colombo 8, Sri Lanka"
+        };
+        const RESIDENCIES = {
+            logo1: GH + "250206130209Frame_25.png",
+            logo2: GH + "REAA%202026%20badges%20PNG%20%20-_Prime%20Group-64.png",
+            office: "+94 112 699 822",
+            web: "www.primeresidencies.lk",
+            companyName: "PRIME LANDS RESIDENCIES PLC",
+            address: "No 75, D.S. Senanayake Mawatha, Colombo 8, Sri Lanka"
+        };
+        const CONSTRUCTION = {
+            logo1: GH + "251203171248Prime_Construction.png",
+            logo2: GH + "REAA%202026%20badges%20PNG%20%20-_Prime%20Group-64.png",
+            office: "+94 11 203 0840",
+            web: "www.primelands.lk",
+            companyName: "PRIME CONSTRUCTION (PVT) LTD",
+            address: "No 75, D.S. Senanayake Mawatha, Colombo 8, Sri Lanka"
+        };
+
+        function esc(str) {
+            if (!str) return '';
+            return str.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+        }
+
+        /* ── Signature builders ──────────────────────────── */
+        function buildBhoomiSignature(name, title, mobile, email) {
+            const n = esc(name) || 'Your Name';
+            const t = esc(title) || 'Your Designation';
+            const m = esc(mobile) || 'Your Mobile';
+            const e = esc(email) || 'your.email@example.com';
+            return `
+            <table class="sig-card" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td class="sig-left">
+                    <div class="sig-name">${n}</div>
+                    <div class="sig-title">${t}</div>
+                    <div class="sig-company">${BHOOMI.companyName}</div>
+                </td>
+                <td class="sig-divider-cell"><div class="sig-divider"></div></td>
+                <td class="sig-details">
+                    <div class="sig-row"><div class="sig-label">Mobile</div><div class="sig-value">${m}</div></div>
+                    <div class="sig-row"><div class="sig-label">Office</div><div class="sig-value">${BHOOMI.office}</div></div>
+                    <div class="sig-row"><div class="sig-label">Email</div><div class="sig-value"><a href="mailto:${e}">${e}</a></div></div>
+                    <div class="sig-row"><div class="sig-label">Web</div><div class="sig-value"><a href="https://${BHOOMI.web}" target="_blank">${BHOOMI.web}</a></div></div>
+                    <div class="sig-row"><div class="sig-label">Address</div><div class="sig-value">${BHOOMI.address}</div></div>
+                </td>
+                <td class="sig-right">
+                    <div class="sig-logo-wrap">
+                        <img src="${BHOOMI.logo}" class="sig-logo" alt="Bhoomi Realty" onerror="this.style.display='none'">
+                    </div>
+                </td>
+            </tr>
+            <tr><td colspan="4" class="sig-bottom-stripe"></td></tr>
+            </table>`;
+        }
+
+        function buildPrimeSignature(name, title, mobile, email, ext) {
+            const n = esc(name) || 'Your Name';
+            const t = esc(title) || 'Your Designation';
+            const m = esc(mobile) || 'Your Mobile';
+            const e = esc(email) || 'your.email@example.com';
+            const x = esc(ext);
+            const office = PRIME.office + (x ? ' Ext: ' + x : '');
+            return `
+            <table class="sig-card" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td class="sig-left">
+                    <div class="sig-name">${n}</div>
+                    <div class="sig-title">${t}</div>
+                    <div class="sig-company">${PRIME.companyName}</div>
+                </td>
+                <td class="sig-divider-cell"><div class="sig-divider prime-divider"></div></td>
+                <td class="sig-details">
+                    <div class="sig-row"><div class="sig-label">Mobile</div><div class="sig-value">${m}</div></div>
+                    <div class="sig-row"><div class="sig-label">Office</div><div class="sig-value">${office}</div></div>
+                    <div class="sig-row"><div class="sig-label">Email</div><div class="sig-value"><a href="mailto:${e}">${e}</a></div></div>
+                    <div class="sig-row"><div class="sig-label">Web</div><div class="sig-value"><a href="https://${PRIME.web}" target="_blank">${PRIME.web}</a></div></div>
+                    <div class="sig-row"><div class="sig-label">Address</div><div class="sig-value">${PRIME.address}</div></div>
+                </td>
+                <td class="sig-right">
+                    <div class="sig-logo-prime">
+                        <img src="${PRIME.logo1}" class="sig-logo-small" alt="Prime Lands" onerror="this.style.display='none'">
+                        <img src="${PRIME.logo2}" class="sig-logo-small" alt="Prime Group Badge" onerror="this.style.display='none'">
+                    </div>
+                </td>
+            </tr>
+            <tr><td colspan="4" class="sig-bottom-stripe prime-stripe"></td></tr>
+            </table>`;
+        }
+
+        function buildResidenciesSignature(name, title, mobile, email, ext) {
+            const n = esc(name) || 'Your Name';
+            const t = esc(title) || 'Your Designation';
+            const m = esc(mobile) || 'Your Mobile';
+            const e = esc(email) || 'your.email@example.com';
+            const x = esc(ext);
+            const office = RESIDENCIES.office + (x ? ' Ext: ' + x : '');
+            return `
+            <table class="sig-card" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td class="sig-left">
+                    <div class="sig-name">${n}</div>
+                    <div class="sig-title">${t}</div>
+                    <div class="sig-company">${RESIDENCIES.companyName}</div>
+                </td>
+                <td class="sig-divider-cell"><div class="sig-divider prime-divider"></div></td>
+                <td class="sig-details">
+                    <div class="sig-row"><div class="sig-label">Mobile</div><div class="sig-value">${m}</div></div>
+                    <div class="sig-row"><div class="sig-label">Office</div><div class="sig-value">${office}</div></div>
+                    <div class="sig-row"><div class="sig-label">Email</div><div class="sig-value"><a href="mailto:${e}">${e}</a></div></div>
+                    <div class="sig-row"><div class="sig-label">Web</div><div class="sig-value"><a href="https://${RESIDENCIES.web}" target="_blank">${RESIDENCIES.web}</a></div></div>
+                    <div class="sig-row"><div class="sig-label">Address</div><div class="sig-value">${RESIDENCIES.address}</div></div>
+                </td>
+                <td class="sig-right">
+                    <div class="sig-logo-prime">
+                        <img src="${RESIDENCIES.logo1}" class="sig-logo-small" alt="Prime Residencies" onerror="this.style.display='none'">
+                        <img src="${RESIDENCIES.logo2}" class="sig-logo-small" alt="Prime Group Badge" onerror="this.style.display='none'">
+                    </div>
+                </td>
+            </tr>
+            <tr><td colspan="4" class="sig-bottom-stripe prime-stripe"></td></tr>
+            </table>`;
+        }
+
+        function buildConstructionSignature(name, title, mobile, email, ext) {
+            const n = esc(name) || 'Your Name';
+            const t = esc(title) || 'Your Designation';
+            const m = esc(mobile) || 'Your Mobile';
+            const e = esc(email) || 'your.email@example.com';
+            const x = esc(ext);
+            const office = CONSTRUCTION.office + (x ? ' Ext: ' + x : '');
+            return `
+            <table class="sig-card" cellpadding="0" cellspacing="0" border="0">
+            <tr>
+                <td class="sig-left">
+                    <div class="sig-name">${n}</div>
+                    <div class="sig-title">${t}</div>
+                    <div class="sig-company">${CONSTRUCTION.companyName}</div>
+                </td>
+                <td class="sig-divider-cell"><div class="sig-divider prime-divider"></div></td>
+                <td class="sig-details">
+                    <div class="sig-row"><div class="sig-label">Mobile</div><div class="sig-value">${m}</div></div>
+                    <div class="sig-row"><div class="sig-label">Office</div><div class="sig-value">${office}</div></div>
+                    <div class="sig-row"><div class="sig-label">Email</div><div class="sig-value"><a href="mailto:${e}">${e}</a></div></div>
+                    <div class="sig-row"><div class="sig-label">Web</div><div class="sig-value"><a href="https://${CONSTRUCTION.web}" target="_blank">${CONSTRUCTION.web}</a></div></div>
+                    <div class="sig-row"><div class="sig-label">Address</div><div class="sig-value">${CONSTRUCTION.address}</div></div>
+                </td>
+                <td class="sig-right">
+                    <div class="sig-logo-prime">
+                        <img src="${CONSTRUCTION.logo1}" class="sig-logo-small" alt="Prime Construction" onerror="this.style.display='none'">
+                        <img src="${CONSTRUCTION.logo2}" class="sig-logo-small" alt="Prime Group Badge" onerror="this.style.display='none'">
+                    </div>
+                </td>
+            </tr>
+            <tr><td colspan="4" class="sig-bottom-stripe prime-stripe"></td></tr>
+            </table>`;
+        }
+
+        /* ── DOM refs ────────────────────────────────────── */
+        const bhoomiName  = document.getElementById('bhoomiName');
+        const bhoomiTitle = document.getElementById('bhoomiTitle');
+        const bhoomiMobile= document.getElementById('bhoomiMobile');
+        const bhoomiEmail = document.getElementById('bhoomiEmail');
+        const bhoomiPreviewDiv = document.getElementById('bhoomiPreview');
+
+        const primeName   = document.getElementById('primeName');
+        const primeTitle  = document.getElementById('primeTitle');
+        const primeMobile = document.getElementById('primeMobile');
+        const primeEmail  = document.getElementById('primeEmail');
+        const primeExt    = document.getElementById('primeExt');
+        const primePreviewDiv = document.getElementById('primePreview');
+
+        const residenciesName   = document.getElementById('residenciesName');
+        const residenciesTitle  = document.getElementById('residenciesTitle');
+        const residenciesMobile = document.getElementById('residenciesMobile');
+        const residenciesEmail  = document.getElementById('residenciesEmail');
+        const residenciesExt    = document.getElementById('residenciesExt');
+        const residenciesPreviewDiv = document.getElementById('residenciesPreview');
+
+        const constructionName   = document.getElementById('constructionName');
+        const constructionTitle  = document.getElementById('constructionTitle');
+        const constructionMobile = document.getElementById('constructionMobile');
+        const constructionEmail  = document.getElementById('constructionEmail');
+        const constructionExt    = document.getElementById('constructionExt');
+        const constructionPreviewDiv = document.getElementById('constructionPreview');
+
+        /* ── Refresh fns ─────────────────────────────────── */
+        function refreshBhoomi()       { bhoomiPreviewDiv.innerHTML       = buildBhoomiSignature(bhoomiName.value, bhoomiTitle.value, bhoomiMobile.value, bhoomiEmail.value); }
+        function refreshPrime()        { primePreviewDiv.innerHTML        = buildPrimeSignature(primeName.value, primeTitle.value, primeMobile.value, primeEmail.value, primeExt.value); }
+        function refreshResidencies()  { residenciesPreviewDiv.innerHTML  = buildResidenciesSignature(residenciesName.value, residenciesTitle.value, residenciesMobile.value, residenciesEmail.value, residenciesExt.value); }
+        function refreshConstruction() { constructionPreviewDiv.innerHTML = buildConstructionSignature(constructionName.value, constructionTitle.value, constructionMobile.value, constructionEmail.value, constructionExt.value); }
+
+        /* ── Toast ───────────────────────────────────────── */
+        function showToast(msg) {
+            const t = document.getElementById('toastMsg');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2400);
+        }
+
+        /* ── Download helpers ────────────────────────────── */
+        async function preloadImage(url) {
+            return new Promise((res, rej) => {
+                const img = new Image();
+
+                img.onload = () => res(img);
+                img.onerror = rej;
+                img.src = url;
+            });
+        }
+
+        async function downloadImage(element, filename) {
+            if (!element) { showToast('No signature element found'); return; }
+            const imgs = element.querySelectorAll('img');
+            await Promise.all([...imgs].map(img => preloadImage(img.src).catch(() => {})));
+            try {
+                showToast('Generating image…');
+                const canvas = await html2canvas(element, {
+                    scale: 2.5,
+                    backgroundColor: '#ffffff',
+                    useCORS: true,
+                    logging: false,
+                    allowTaint: false
+                });
+                const a = document.createElement('a');
+                a.download = filename;
+                a.href = canvas.toDataURL('image/png');
+                a.click();
+                showToast(`✓ Saved as ${filename}`);
+            } catch (err) {
+                console.error(err);
+                showToast('Image generation failed. Check console.');
+            }
+        }
+
+        /* ── Button bindings ─────────────────────────────── */
+        document.getElementById('refreshBhoomiBtn').onclick = () => { refreshBhoomi(); showToast('Preview updated'); };
+        document.getElementById('downloadBhoomiImgBtn').onclick = () => downloadImage(bhoomiPreviewDiv.querySelector('table.sig-card'), 'bhoomi_signature.png');
+
+        document.getElementById('refreshPrimeBtn').onclick = () => { refreshPrime(); showToast('Preview updated'); };
+        document.getElementById('downloadPrimeImgBtn').onclick = () => downloadImage(primePreviewDiv.querySelector('table.sig-card'), 'prime_signature.png');
+
+        document.getElementById('refreshResidenciesBtn').onclick = () => { refreshResidencies(); showToast('Preview updated'); };
+        document.getElementById('downloadResidenciesImgBtn').onclick = () => downloadImage(residenciesPreviewDiv.querySelector('table.sig-card'), 'prime_residencies_signature.png');
+
+        document.getElementById('refreshConstructionBtn').onclick = () => { refreshConstruction(); showToast('Preview updated'); };
+        document.getElementById('downloadConstructionImgBtn').onclick = () => downloadImage(constructionPreviewDiv.querySelector('table.sig-card'), 'prime_construction_signature.png');
+
+        /* ── Live input listeners ────────────────────────── */
+        [bhoomiName, bhoomiTitle, bhoomiMobile, bhoomiEmail].forEach(el => el.addEventListener('input', refreshBhoomi));
+        [primeName, primeTitle, primeMobile, primeEmail, primeExt].forEach(el => el.addEventListener('input', refreshPrime));
+        [residenciesName, residenciesTitle, residenciesMobile, residenciesEmail, residenciesExt].forEach(el => el.addEventListener('input', refreshResidencies));
+        [constructionName, constructionTitle, constructionMobile, constructionEmail, constructionExt].forEach(el => el.addEventListener('input', refreshConstruction));
+
+        /* ── Tabs ────────────────────────────────────────── */
+        const tabBtns = document.querySelectorAll('.tab-btn');
+        const panels  = document.querySelectorAll('.tab-panel');
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const id = btn.getAttribute('data-tab');
+                tabBtns.forEach(b => b.classList.remove('active'));
+                panels.forEach(p => p.classList.remove('active-panel'));
+                btn.classList.add('active');
+                document.getElementById(`tab-${id}`).classList.add('active-panel');
+            });
+        });
+
+        /* ── Init ────────────────────────────────────────── */
+        refreshBhoomi();
+        refreshPrime();
+        refreshResidencies();
+        refreshConstruction();
+    </script>
+</body>
+</html>
